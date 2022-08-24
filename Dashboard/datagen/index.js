@@ -4,18 +4,6 @@ import { createConnection } from 'mysql';
 import fs from 'fs'
 
 
-import ExcelJS from 'exceljs';
-
-
-const workbook = new ExcelJS.Workbook();
-workbook.creator = 'Me';
-workbook.lastModifiedBy = 'Her';
-workbook.created = new Date(1985, 8, 30);
-workbook.modified = new Date();
-workbook.lastPrinted = new Date(2016, 9, 27);
-
-const sheet = workbook.addWorksheet('My Sheet');
-
 const connection = createConnection({ 
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
