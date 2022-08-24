@@ -3,6 +3,19 @@ import dotenv from 'dotenv/config';
 import { createConnection } from 'mysql';
 import fs from 'fs'
 
+
+import ExcelJS from 'exceljs';
+
+
+const workbook = new ExcelJS.Workbook();
+workbook.creator = 'Me';
+workbook.lastModifiedBy = 'Her';
+workbook.created = new Date(1985, 8, 30);
+workbook.modified = new Date();
+workbook.lastPrinted = new Date(2016, 9, 27);
+
+const sheet = workbook.addWorksheet('My Sheet');
+
 const connection = createConnection({ 
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
@@ -10,13 +23,13 @@ const connection = createConnection({
     database: process.env.MYSQL_DATABASE
 })
 
-function getMonthDifference(startDate, endDate) {
-  return (
-    endDate.getMonth() -
-    startDate.getMonth() +
-    12 * (endDate.getFullYear() - startDate.getFullYear())
-  );
-}
+//function getMonthDifference(startDate, endDate) {
+//  return (
+//    endDate.getMonth() -
+//    startDate.getMonth() +
+//    12 * (endDate.getFullYear() - startDate.getFullYear())
+//  );
+//}
 
 connection.connect((err) => {
     if(err){
@@ -366,34 +379,34 @@ connection.connect((err) => {
 
 
 
-for (var i = 0; i < 250; i++) { 
-  var tdate1, tdate2
-  var tdateyear = "2022"
-  var tdatemonth = Math.floor((Math.random() * 7)+5)
-  var tdateday = Math.floor((Math.random() * 30)+1)
-  if (tdatemonth == 2 && tdateday > 28) {
-    tdateday = "15"
-  }
-  tdate1 = tdateyear + "-" + tdatemonth.toString() + "-" + tdateday.toString()
-  var signed = Math.round(Math.random());
-  if (signed == 1) {
-    if (tdateday >= 16 && tdatemonth < 12) {
-      tdate2 = tdateyear + "-" + (tdatemonth+1).toString() + "-" + tdateday.toString()
-    } else if (tdateday < 16) {
-      tdate2 = tdateyear + "-" + tdatemonth.toString() + "-" + (tdateday+14).toString()
-    } else {
-      tdate2 = tdate1;
-    }
-    const engagement = {id: 125+i, cust_id:  Math.floor((Math.random() * 29) + 0), sent_date: tdate1, signed_date: tdate2, sent: true, signed: true}
-    connection.query('INSERT INTO engagements SET ?', engagement, (err, res) => {
-      if(err) throw err;
-      console.log('Last insert ID:', res.id);
-    });
-  } else {
-    const engagement = {id: 125+i, cust_id:  Math.floor((Math.random() * 29) + 0), sent_date: tdate1, sent: true, signed: false}
-    connection.query('INSERT INTO engagements SET ?', engagement, (err, res) => {
-      if(err) throw err;
-      console.log('Last insert ID:', res.id);
-    });
-  }
-}
+// //for (var i = 0; i < 250; i++) { 
+// //  var tdate1, tdate2
+// //  var tdateyear = "2022"
+// //  var tdatemonth = Math.floor((Math.random() * 7)+5)
+//   var tdateday = Math.floor((Math.random() * 30)+1)
+//   if (tdatemonth == 2 && tdateday > 28) {
+//     tdateday = "15"
+//   }
+//   tdate1 = tdateyear + "-" + tdatemonth.toString() + "-" + tdateday.toString()
+//   var signed = Math.round(Math.random());
+//   if (signed == 1) {
+//     if (tdateday >= 16 && tdatemonth < 12) {
+//       tdate2 = tdateyear + "-" + (tdatemonth+1).toString() + "-" + tdateday.toString()
+//     } else if (tdateday < 16) {
+//       tdate2 = tdateyear + "-" + tdatemonth.toString() + "-" + (tdateday+14).toString()
+//     } else {
+//       tdate2 = tdate1;
+//     }
+//     const engagement = {id: 125+i, cust_id:  Math.floor((Math.random() * 29) + 0), sent_date: tdate1, signed_date: tdate2, sent: true, signed: true}
+//     connection.query('INSERT INTO engagements SET ?', engagement, (err, res) => {
+//       if(err) throw err;
+//       console.log('Last insert ID:', res.id);
+//     });
+//   } else {
+//     const engagement = {id: 125+i, cust_id:  Math.floor((Math.random() * 29) + 0), sent_date: tdate1, sent: true, signed: false}
+//     connection.query('INSERT INTO engagements SET ?', engagement, (err, res) => {
+//       if(err) throw err;
+//       console.log('Last insert ID:', res.id);
+//     });
+//   }
+// }
