@@ -43,7 +43,7 @@ const uploadObject = async () => {
   
 const getFinancialDataset = async () => {
   try {
-    const data = await s3Client.send(new GetObjectCommand(bucketParams));
+    const data = await s3Client.send(new GetObjectCommand(financial_ds_params));
     const inputStream = data.Body;
     inputStream.pipe(outputStream);
     outputStream.on('finish', () => {
