@@ -4,7 +4,7 @@ import Workbook from "exceljs";
 
 
 
-var workbook = new Workbook()
+var workbook = new Workbook.Workbook()
 workbook.xlsx.readFile('index.xlsx')//Change file name here or give file path
 .then(function() {
     uploadObject();
