@@ -12,7 +12,7 @@ workbook.xlsx.readFile('index.xlsx')//Change file name here or give file path
     worksheet.eachRow({ includeEmpty: false }, function(row, rowNumber) {
       r=worksheet.getRow(i).values;
       r1=r[2];// Indexing a column
-      console.log(r);
+      console.log(r[2]);
       i++;
     }); 
     worksheet.getCell('B3').value = "abc";//Change the cell number here
