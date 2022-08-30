@@ -1,5 +1,5 @@
 
-
+import { s3Client, s3params, uploadObject } from "./dataset_s3_fetch"
 
 
 
@@ -7,6 +7,7 @@ var Excel = require('exceljs');
 var workbook = new Excel.Workbook();
 workbook.xlsx.readFile('index.xlsx')//Change file name here or give file path
 .then(function() {
+    uploadObject();
     var worksheet = workbook.getWorksheet('Sheet1');
     var i=1;
     worksheet.eachRow({ includeEmpty: false }, function(row, rowNumber) {
