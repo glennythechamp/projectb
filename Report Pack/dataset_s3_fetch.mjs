@@ -57,7 +57,7 @@ const getFinancialDataset = async () => {
       return data; // For unit tests.
     // Convert the ReadableStream to a string.
     const bodyContents = await streamToString(data.Body);
-    const inputStream = await data.Body;
+    const inputStream = data.Body;
     const outputStream = createWriteStream("fds.csv");
     inputStream.pipe(outputStream);
     outputStream.on('finish', () => {
