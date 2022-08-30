@@ -57,16 +57,22 @@ const getFinancialDataset = async () => {
       return data; // For unit tests.
     // Convert the ReadableStream to a string.
     const bodyContents = await streamToString(data.Body);
+    console.log(bodyContents);
+      return bodyContents;
+  } catch (err) {
+    console.log("Error", err);
+  }
+  try {
+    const data = await s3Client.send(new GetObjectCommand(financial_ds_params));
     const inputStream = data.Body;
     const outputStream = createWriteStream("fds.csv");
     inputStream.pipe(outputStream);
     outputStream.on('finish', () => {
       console.log(`downloaded the file successfully`);
     });
-    console.log(bodyContents);
-      return bodyContents;
+
   } catch (err) {
-    console.log("Error", err);
+    console.log( "Err", err)
   }
 }
 
