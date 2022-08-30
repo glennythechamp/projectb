@@ -1,5 +1,5 @@
 
-var fetch_s3 = require("./dataset_s3_fetch.js")
+var fetch_s3 = require("./dataset_s3_fetch.mjs")
 var Excel = require('exceljs');
 
 
