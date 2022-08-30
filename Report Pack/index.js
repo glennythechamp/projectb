@@ -1,5 +1,5 @@
 
-import { s3Client, s3params, uploadObject } from "./dataset_s3_fetch.mjs"
+import { s3Client, uploadParams, uploadObject } from "./dataset_s3_fetch.mjs"
 import Workbook from "exceljs";
 
 

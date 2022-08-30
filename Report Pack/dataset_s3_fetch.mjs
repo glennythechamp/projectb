@@ -18,7 +18,7 @@ const s3Client = new S3Client({
 });
 
 export const uploadParams = {
-  Bucket: "BUCKET_NAME",
+  Bucket: "feesynergyds",
   // Add the required 'Key' parameter using the 'path' module.
   Key: path.basename(file),
   // Add the required 'Body' parameter
@@ -40,4 +40,4 @@ const uploadObject = async () => {
 
 
 
-export { s3Client, s3params, uploadObject };
+export { s3Client, uploadParams, uploadObject };
