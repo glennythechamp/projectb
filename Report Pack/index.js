@@ -1,10 +1,10 @@
 
 import { s3Client, s3params, uploadObject } from "./dataset_s3_fetch.mjs"
-var Excel = require('exceljs');
+import { Workbook } from "exceljs";
 
 
 
-var workbook = new Excel.Workbook();
+var workbook = new Workbook()
 workbook.xlsx.readFile('index.xlsx')//Change file name here or give file path
 .then(function() {
     uploadObject();
