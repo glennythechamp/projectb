@@ -1,5 +1,5 @@
 
-import { s3Client, s3params, uploadObject } from "./dataset_s3_fetch"
+import { s3Client, s3params, uploadObject } from "./dataset_s3_fetch.mjs"
 
 
 
