@@ -1,9 +1,9 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import {path} from "path";
-import {fs} from "fs";
+import { basename } from "path";
+import { createReadStream } from "fs";
 
 const file = "index.xlsx"; // Path to and name of object. For example '../myFiles/index.js'.
-const fileStream = fs.createReadStream(file);
+const fileStream = createReadStream(file);
 
 
 
@@ -20,7 +20,7 @@ const s3Client = new S3Client({
 export const uploadParams = {
   Bucket: "feesynergyds",
   // Add the required 'Key' parameter using the 'path' module.
-  Key: path.basename(file),
+  Key: basename(file),
   // Add the required 'Body' parameter
   Body: fileStream,
 };
