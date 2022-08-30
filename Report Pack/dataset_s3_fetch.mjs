@@ -1,4 +1,10 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {path} from "path";
+import {fs} from "fs";
+
+const file = "index.xlsx"; // Path to and name of object. For example '../myFiles/index.js'.
+const fileStream = fs.createReadStream(file);
+
 
 
 const s3Client = new S3Client({
@@ -11,29 +17,24 @@ const s3Client = new S3Client({
     }
 });
 
-const s3params = {
-    Bucket: "feesynergyds",
-    Key: "index.xlsx",
-    ACL: "private",
-    Metadata: {
-        "type": "test_dataset"
-    } 
+export const uploadParams = {
+  Bucket: "BUCKET_NAME",
+  // Add the required 'Key' parameter using the 'path' module.
+  Key: path.basename(file),
+  // Add the required 'Body' parameter
+  Body: fileStream,
 };
 
 
+
 const uploadObject = async () => {
-    try {
-      const data = await s3Client.send(new PutObjectCommand(s3params));
-      console.log(
-        "Successfully uploaded object: " +
-          params.Bucket +
-          "/" +
-          params.Key
-      );
-      return data;
-    } catch (err) {
-      console.log("Error", err);
-    }
+  try {
+    const data = await s3Client.send(new PutObjectCommand(uploadParams));
+    console.log("Success", data);
+    return data; // For unit tests.
+  } catch (err) {
+    console.log("Error", err);
+  }
 };
   
 
