@@ -2,7 +2,7 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
 
 const s3Client = new S3Client({
-    endpoint: "sgp1.digitaloceanspaces.com",
+    endpoint: "https://sgp1.digitaloceanspaces.com",
     region: "sgp1",
     credentials: {
         // Typically set in environment variables, dummy/test s3 bucket credentials used.
