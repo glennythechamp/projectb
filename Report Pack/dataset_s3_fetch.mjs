@@ -40,4 +40,4 @@ const uploadObject = async () => {
 
 
 
-export { s3Client, uploadParams, uploadObject };
+export { s3Client, uploadObject };
