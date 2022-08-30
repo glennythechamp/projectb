@@ -23,7 +23,7 @@ const s3params = {
 
 const uploadObject = async () => {
     try {
-      const data = await s3Client.send(new PutObjectCommand(params));
+      const data = await s3Client.send(new PutObjectCommand(s3params));
       console.log(
         "Successfully uploaded object: " +
           params.Bucket +
