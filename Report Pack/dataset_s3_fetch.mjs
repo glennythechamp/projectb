@@ -1,6 +1,6 @@
 import { PutObjectCommand, S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { basename } from "path";
-import { createReadStream } from "fs";
+import { createReadStream, createWriteStream } from "fs";
 
 const file = "index.xlsx"; // Path to and name of object. For example '../myFiles/index.js'.
 const fileStream = createReadStream(file);
@@ -57,16 +57,18 @@ const getFinancialDataset = async () => {
       return data; // For unit tests.
     // Convert the ReadableStream to a string.
     const bodyContents = await streamToString(data.Body);
+    const inputStream = await data.Body;
+    const outputStream = createWriteStream("fds.csv");
+    inputStream.pipe(outputStream);
+    outputStream.on('finish', () => {
+      console.log(`downloaded the file successfully`);
+    });
     console.log(bodyContents);
       return bodyContents;
   } catch (err) {
     console.log("Error", err);
   }
-
 }
-
-
-
 
 
 export { s3Client, uploadObject, getFinancialDataset };
