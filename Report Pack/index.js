@@ -1,8 +1,6 @@
 
-import { s3Client, uploadParams, uploadObject } from "./dataset_s3_fetch.mjs"
+import { s3Client, uploadParams, uploadObject, getFinancialDataset } from "./dataset_s3_fetch.mjs"
 import Workbook from "exceljs";
-
-
 
 var workbook = new Workbook.Workbook()
 workbook.xlsx.readFile('index.xlsx')//Change file name here or give file path
@@ -19,3 +17,19 @@ workbook.xlsx.readFile('index.xlsx')//Change file name here or give file path
     worksheet.getCell('B3').value = "abc";//Change the cell number here
 return workbook.xlsx.writeFile('file.xlsx')//Change file name here or give     file path
    });
+
+
+// Get Financial Dataset
+getFinancialDataset();
+
+
+
+
+
+// read and calculate number of approv. card payments
+var financial_ds_workbook = new Workbook.Workbook()
+financial_ds_workbook.xlsx.readFile('')
+
+
+
+
