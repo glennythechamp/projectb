@@ -1,11 +1,11 @@
 
 import { s3Client, uploadParams, uploadObject, getFinancialDataset, financial_ds_params } from "./dataset_s3_fetch.mjs"
+import { logFinancialDS } from "./calculations.js"
 import Workbook from "exceljs";
 
 
 getFinancialDataset();
-
-
+logFinancialDS();
 
 var workbook = new Workbook.Workbook()
 workbook.xlsx.readFile('index.xlsx')//Change file name here or give file path
