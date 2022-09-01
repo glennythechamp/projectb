@@ -1,11 +1,33 @@
 
 import { s3Client, uploadParams, uploadObject, getFinancialDataset, financial_ds_params } from "./dataset_s3_fetch.mjs"
-import { logFinancialDS } from "./calculations.js"
+import { logFinancialDS, calcCardPaymentsVal, getFinancialDSArr } from "./calculations.js"
 import Workbook from "exceljs";
 
 
-getFinancialDataset();
-logFinancialDS();
+
+var financialDataset = [];
+
+
+getFinancialDSArr().then(function(result) {
+    financialDataset = result;
+});
+setTimeout(function() {console.log(financialDataset[0])}, 5000);
+setTimeout(function() {calcCardPaymentsVal(financialDataset)}, 3000);
+
+
+
+
+
+//test();
+
+
+//logFinancialDS().then( ds => console.log("done"));
+//calcCardPaymentsVal(ds);
+
+
+
+
+
 
 var workbook = new Workbook.Workbook()
 workbook.xlsx.readFile('index.xlsx')//Change file name here or give file path
@@ -16,9 +38,9 @@ workbook.xlsx.readFile('index.xlsx')//Change file name here or give file path
     worksheet.eachRow({ includeEmpty: false }, function(row, rowNumber) {
       var r=worksheet.getRow(i).values;
       var r1=r[2];// Indexing a column
-      console.log(r[2]);
+      //console.log(r[2]);
       i++;
-    }); 
+    });
     worksheet.getCell('B3').value = "abc";//Change the cell number here
 return workbook.xlsx.writeFile('file.xlsx')//Change file name here or give     file path
    });
