@@ -1,6 +1,6 @@
 
 import { s3Client, uploadParams, uploadObject, getFinancialDataset, financial_ds_params } from "./dataset_s3_fetch.mjs"
-import { logFinancialDS, calcCardPaymentsVal, getFinancialDSArr, calcCardPayApprov } from "./calculations.js"
+import { logFinancialDS, calcCardPaymentsVal, getFinancialDSArr, calcCardPayApprov, calcAvgSurcharRateMBM } from "./calculations.js"
 import Workbook from "exceljs";
 
 var financialDataset = [];
@@ -21,13 +21,8 @@ setTimeout(function() {calcCardPaymentsVal(financialDataset)}, 3000);
 setTimeout(function() {calcCardPayApprov(financialDataset)}, 3000);
 
 
-
-// Calculate ...
-
-
-
-
-
+// Average Surcharge rate % of Approved Card Payments – Month By Month
+setTimeout(function() {calcAvgSurcharRateMBM(financialDataset)}, 3000);
 
 
 

@@ -21,9 +21,6 @@ const logFinancialDS = () => {
 }
 
 
-
-
-
 const getFinancialDSArr = async () => {
         return new Promise((res, err) => {
             var ds = [];
@@ -94,5 +91,32 @@ const calcCardPayApprov = async (ds) => {
 }
 
 
+const calcAvgSurcharRateMBM = async (ds) => {
+    try {
+        var dateTo = new Date()
+        var avgsurchargembmsum = Array(13).fill(0)
+        var avgsurchargembmcount = Array(13).fill(0)
+        var avgsurcharge = Array(13).fill(0)
+        for (var i = 0; i < ds.length; i++) {
+            var dateString = ds[i][23]
+            var dateParts = dateString.split("/");
+            // month is 0-based, that's why we need dataParts[1] - 1
+            var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+            var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+            if (ds[i][9] == 'DEBIT_CREDIT_CARD_API' && ds[i][10] == 'Approved') {
+                if (datediff < 13) {
+                    console.log(Number(ds[i][15]))
+                    avgsurchargembmsum[datediff] += Number(ds[i][14])
+                    avgsurchargembmcount[datediff]++
+                    avgsurcharge[datediff] = avgsurchargembmsum[datediff]/avgsurchargembmcount[datediff]
+                }
+            }
+        }
+        console.log(avgsurcharge);
+    } catch(err) {
+        console.log(err)
+    }
+}
 
-export { logFinancialDS, getFinancialDSArr, calcCardPaymentsVal, calcCardPayApprov }
+
+export { logFinancialDS, getFinancialDSArr, calcCardPaymentsVal, calcCardPayApprov, calcAvgSurcharRateMBM }
