@@ -1,6 +1,6 @@
 
 import { s3Client, uploadParams, uploadObject, getFinancialDataset, financial_ds_params } from "./dataset_s3_fetch.mjs"
-import { logFinancialDS, calcCardPaymentsVal, getFinancialDSArr } from "./calculations.js"
+import { logFinancialDS, calcCardPaymentsVal, getFinancialDSArr, calcCardPayApprov } from "./calculations.js"
 import Workbook from "exceljs";
 
 var financialDataset = [];
@@ -17,6 +17,8 @@ setTimeout(function() {console.log(financialDataset[0])}, 5000);
 setTimeout(function() {calcCardPaymentsVal(financialDataset)}, 3000);
 
 
+// Calculate Approved Card Transactions
+setTimeout(function() {calcCardPayApprov(financialDataset)}, 3000);
 
 
 
