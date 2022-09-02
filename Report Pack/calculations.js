@@ -125,7 +125,7 @@ const calcDeclDirectDebits = async (ds) => {
         // Month will be set to May 2022, since the entries for dataset 
         // ends on the month of May.
         dateTo = dateTo.setMonth(4)
-        var dishonoredDirectDebits = Array(30).fill(0)
+        var dishonoredDirectDebits = Array(31).fill(0)
         for (var i = 0; i < ds.length; i++) {
             var dateString = ds[i][23]
             var dateParts = dateString.split("/");
@@ -133,13 +133,13 @@ const calcDeclDirectDebits = async (ds) => {
             var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
             var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
             if (ds[i][9] == 'DEBIT_CREDIT_CARD_API' && ds[i][10] == 'Declined') {
-                if (datediff < 1) {
+                if (dateTo.getMonth() == dateFrom.getMonth()) {
                     var day = dateFrom.getDay()
                     dishonoredDirectDebits[day]++
                 }
             }
         }
-        console.log(dishonoredDirectDebits);
+        console.log("DisH DD" + dishonoredDirectDebits);
     } catch(err) {
         console.log(err)
     }
