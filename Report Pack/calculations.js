@@ -20,7 +20,7 @@ const logFinancialDS = () => {
     }
 }
 
-// TODO: This function needs to be moved to the S3 Fetch Module
+
 
 
 // Calculate Card Payments Value - Month by Month

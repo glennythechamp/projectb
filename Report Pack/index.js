@@ -5,8 +5,7 @@ import Workbook from "exceljs";
 
 var financialDataset = [];
 
-// Assign result of CSV scan to the array created earlier
-// TODO: Move getFinancialDSArr to dataset_s3_fetch module
+
 getFinancialDSArr().then(function(result) {
     financialDataset = result;
 });
