@@ -121,7 +121,7 @@ const calcAvgSurcharRateMBM = async (ds) => {
 const calcDeclDirectDebits = async (ds) => {
     try {
         var dateTo = new Date()
-        // Month will be set to May 2022, since the entries for dataset 
+        // Month will be set to May 2022, since the entries for dataset
         // ends on the month of May.
         dateTo.setMonth(4)
         var dishonoredDirectDebits = Array(31).fill(0)
@@ -132,10 +132,11 @@ const calcDeclDirectDebits = async (ds) => {
             var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
             var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
             const oneDay = 24 * 60 * 60 * 1000;
-            var daysdiff = Math.round(Math.abs((dateFrom - dateTo) / oneDay));
+            var daysdiff = Math.round((dateTo - dateFrom) / oneDay);
             if (ds[i][9] == 'DEBIT_CREDIT_CARD_API' && ds[i][10] == 'Declined') {
-                if (daysdiff <= 31) {
-                    dishonoredDirectDebits[daysdiff]++
+                console.log(daysdiff)
+                if (daysdiff < 31 && daysdiff >= 0) {
+                    dishonoredDirectDebits[Math.abs(daysdiff)]++
                 }
             }
         }
@@ -148,5 +149,5 @@ const calcDeclDirectDebits = async (ds) => {
 
 
 
-export { logFinancialDS, getFinancialDSArr, calcCardPaymentsVal, 
+export { logFinancialDS, getFinancialDSArr, calcCardPaymentsVal,
          calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits }
