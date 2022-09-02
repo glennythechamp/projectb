@@ -20,7 +20,7 @@ const logFinancialDS = () => {
     }
 }
 
-
+// TODO: This function needs to be moved to the S3 Fetch Module
 const getFinancialDSArr = async () => {
         return new Promise((res, err) => {
             var ds = [];
@@ -39,13 +39,8 @@ const getFinancialDSArr = async () => {
         });
 }
 
-async function monthDiff(dateFrom, dateTo) {
-     return dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
 
-}
-
-
-
+// Calculate Card Payments Value - Month by Month
 const calcCardPaymentsVal = async (ds) => {
     try {
         var dateTo = new Date()
@@ -68,6 +63,8 @@ const calcCardPaymentsVal = async (ds) => {
     }
 }
 
+
+// Calculate number of approved card payments, month by month
 const calcCardPayApprov = async (ds) => {
     try {
         var dateTo = new Date()
@@ -90,7 +87,7 @@ const calcCardPayApprov = async (ds) => {
     }
 }
 
-
+// Calculate average surcharge rate of card payments, month by month
 const calcAvgSurcharRateMBM = async (ds) => {
     try {
         var dateTo = new Date()
@@ -117,6 +114,11 @@ const calcAvgSurcharRateMBM = async (ds) => {
         console.log(err)
     }
 }
+
+// Direct Debits
+
+
+
 
 
 export { logFinancialDS, getFinancialDSArr, calcCardPaymentsVal, calcCardPayApprov, calcAvgSurcharRateMBM }
