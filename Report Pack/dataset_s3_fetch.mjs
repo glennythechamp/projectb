@@ -1,6 +1,7 @@
 import { PutObjectCommand, S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { basename } from "path";
 import { createReadStream, createWriteStream } from "fs";
+import { parse } from "csv-parse";
 
 const file = "index.xlsx"; // Path to and name of object. For example '../myFiles/index.js'.
 const fileStream = createReadStream(file);
@@ -54,5 +55,25 @@ const getFinancialDataset = async () => {
   }
 }
 
+const getFinancialDSArr = async () => {
+  return new Promise((res, err) => {
+      var ds = [];
+      createReadStream("finDB.csv")
+          .pipe(parse({ delimiter: ",", from_line: 2 }))
+          .on("data", function (row) {
+              ds.push(row);
+          })
+          .on("end", function () {
+              //console.log(ds[0]);
+              res(ds)
+          })
+          .on("error", (error) => {
+              err(console.log(error));
+          })
+  });
+}
 
-export { s3Client, uploadObject, getFinancialDataset };
+
+
+
+export { s3Client, uploadObject, getFinancialDataset, getFinancialDSArr };

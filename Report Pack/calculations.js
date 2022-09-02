@@ -1,6 +1,6 @@
 //import Workbook from "exceljs";
 import { createReadStream, createWriteStream } from "fs";
-import { parse } from "csv-parse";
+
 //import {parseInt} from "Integer";
 
 const logFinancialDS = () => {
@@ -21,23 +21,6 @@ const logFinancialDS = () => {
 }
 
 // TODO: This function needs to be moved to the S3 Fetch Module
-const getFinancialDSArr = async () => {
-        return new Promise((res, err) => {
-            var ds = [];
-            createReadStream("finDB.csv")
-                .pipe(parse({ delimiter: ",", from_line: 2 }))
-                .on("data", function (row) {
-                    ds.push(row);
-                })
-                .on("end", function () {
-                    //console.log(ds[0]);
-                    res(ds)
-                })
-                .on("error", (error) => {
-                    err(console.log(error));
-                })
-        });
-}
 
 
 // Calculate Card Payments Value - Month by Month
@@ -167,5 +150,5 @@ const calcDeclDirectDebits = async (ds) => {
 
 
 
-export { logFinancialDS, getFinancialDSArr, calcCardPaymentsVal,
+export { logFinancialDS, calcCardPaymentsVal,
          calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits }
