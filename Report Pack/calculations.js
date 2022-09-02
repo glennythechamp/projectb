@@ -131,10 +131,11 @@ const calcDeclDirectDebits = async (ds) => {
             // month is 0-based, that's why we need dataParts[1] - 1
             var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
             var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+            const oneDay = 24 * 60 * 60 * 1000;
+            var daysdiff = Math.round(Math.abs((dateFrom - dateTo) / oneDay));
             if (ds[i][9] == 'DEBIT_CREDIT_CARD_API' && ds[i][10] == 'Declined') {
-                if (dateTo.getMonth() == dateFrom.getMonth() && dateTo.getFullYear() == dateFrom.getFullYear()) {
-                    var day = dateFrom.getDay()
-                    dishonoredDirectDebits[day]++
+                if (daysdiff <= 31) {
+                    dishonoredDirectDebits[daysdiff]++
                 }
             }
         }
