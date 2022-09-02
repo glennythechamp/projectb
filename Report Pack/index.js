@@ -1,6 +1,6 @@
 
 import { s3Client, uploadParams, uploadObject, getFinancialDataset, financial_ds_params } from "./dataset_s3_fetch.mjs"
-import { logFinancialDS, calcCardPaymentsVal, getFinancialDSArr, calcCardPayApprov, calcAvgSurcharRateMBM } from "./calculations.js"
+import { logFinancialDS, calcCardPaymentsVal, getFinancialDSArr, calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits } from "./calculations.js"
 import Workbook from "exceljs";
 
 var financialDataset = [];
@@ -30,8 +30,7 @@ setTimeout(function() {calcAvgSurcharRateMBM(financialDataset)}, 3000);
 // Number of Dishonored Direct Debits - Last 30 Day by Day
 // NOTE: The dataset entries end on May, so current date
 // will be set to May 2022 to reflect this.
-
-
+setTimeout(function() {calcDeclDirectDebits(financialDataset)}, 3000);
 
 
 
