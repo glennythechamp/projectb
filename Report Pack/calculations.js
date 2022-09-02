@@ -133,7 +133,7 @@ const calcDeclDirectDebits = async (ds) => {
             var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
             const oneDay = 24 * 60 * 60 * 1000;
             var daysdiff = Math.round((dateTo - dateFrom) / oneDay);
-            if (ds[i][9] == 'DEBIT_CREDIT_CARD_API' && ds[i][10] == 'Declined') {
+            if (ds[i][9] == 'BRANCH_PAYMENT' && ds[i][10] == 'Declined') {
                 console.log(daysdiff)
                 if (daysdiff < 31 && daysdiff >= 0) {
                     dishonoredDirectDebits[Math.abs(daysdiff)]++
