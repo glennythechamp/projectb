@@ -132,7 +132,7 @@ const calcDeclDirectDebits = async (ds) => {
             var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
             var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
             if (ds[i][9] == 'DEBIT_CREDIT_CARD_API' && ds[i][10] == 'Declined') {
-                if (dateTo.getMonth() == dateFrom.getMonth() && dateTo.getFullYear() == dateTo.getFullYear()) {
+                if (dateTo.getMonth() == dateFrom.getMonth() && dateTo.getFullYear() == dateFrom.getFullYear()) {
                     var day = dateFrom.getDay()
                     dishonoredDirectDebits[day]++
                 }
