@@ -102,7 +102,6 @@ const calcAvgSurcharRateMBM = async (ds) => {
             var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
             if (ds[i][9] == 'DEBIT_CREDIT_CARD_API' && ds[i][10] == 'Approved') {
                 if (datediff < 13) {
-                    console.log(Number(ds[i][15]))
                     avgsurchargembmsum[datediff] += Number(ds[i][14])
                     avgsurchargembmcount[datediff]++
                     avgsurcharge[datediff] = avgsurchargembmsum[datediff]/avgsurchargembmcount[datediff]
@@ -124,7 +123,7 @@ const calcDeclDirectDebits = async (ds) => {
         var dateTo = new Date()
         // Month will be set to May 2022, since the entries for dataset 
         // ends on the month of May.
-        dateTo = dateTo.setMonth(4)
+        dateTo.setMonth(4)
         var dishonoredDirectDebits = Array(31).fill(0)
         for (var i = 0; i < ds.length; i++) {
             var dateString = ds[i][23]
