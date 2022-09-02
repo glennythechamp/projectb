@@ -117,6 +117,24 @@ const calcAvgSurcharRateMBM = async (ds) => {
 // Direct Debits
 
 
+
+// Calculate Approved Direct Debit Payments Month by Month
+const calcApprovDDPayMBM = async (ds) => {
+    try {
+        var dateTo = new Date()
+        var directDebitPaymentsVal = Array(12).fill(0)
+        for (var i = 0; i < ds.length; i++) {
+
+
+
+
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
 // Declined Direct Debits Day by Day
 const calcDeclDirectDebits = async (ds) => {
     try {
@@ -140,7 +158,7 @@ const calcDeclDirectDebits = async (ds) => {
                 }
             }
         }
-        console.log("DisH DD" + dishonoredDirectDebits);
+        console.log("Dis Honored" + dishonoredDirectDebits);
     } catch(err) {
         console.log(err)
     }
