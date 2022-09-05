@@ -4,7 +4,7 @@ import { logFinancialDS, calcCardPaymentsVal, calcCardPayApprov, calcAvgSurcharR
 import Workbook from "exceljs";
 
 var financialDataset = [];
-
+var cardPayVals = [];
 
 getFinancialDSArr().then(function(result) {
     financialDataset = result;
@@ -15,8 +15,26 @@ getFinancialDSArr().then(function(result) {
 // Test first entry of dataset
 setTimeout(function() {console.log(financialDataset[0])}, 5000);
 
+
+
 // Calculate Approved Card Payments Value
-setTimeout(function() {calcCardPaymentsVal(financialDataset)}, 3000);
+setTimeout(function() { 
+  calcCardPaymentsVal(financialDataset).then(function(result) {
+    cardPayVals = result
+  })
+}, 3000);
+
+setTimeout(function() {
+  cardPayVals.unshift("Value of Approved Payments") 
+  var workbook = new Workbook.Workbook()
+    workbook.xlsx.readFile('file.xlsx').then(function () {//Change file name here or give file path 
+      var sheet = workbook.getWorksheet('Sheet1');
+      const row6 = sheet.getRow(7)
+      row6.values = cardPayVals
+      row6.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+      workbook.xlsx.writeFile('file.xlsx')//Change file name here or give     file path
+  })
+}, 5000)
 
 // Calculate Approved Card Transactions
 setTimeout(function() {calcCardPayApprov(financialDataset)}, 3000);
@@ -37,23 +55,6 @@ setTimeout(function() {calcDeclDirectDebits(financialDataset)}, 3000);
 
 
 
-
-
-var workbook = new Workbook.Workbook()
-workbook.xlsx.readFile('index.xlsx')//Change file name here or give file path
-.then(function() {
-    uploadObject();
-    var worksheet = workbook.getWorksheet('Sheet1');
-    var i=1;
-    worksheet.eachRow({ includeEmpty: false }, function(row, rowNumber) {
-      var r=worksheet.getRow(i).values;
-      var r1=r[2];// Indexing a column
-      //console.log(r[2]);
-      i++;
-    });
-    worksheet.getCell('B3').value = "abc";//Change the cell number here
-return workbook.xlsx.writeFile('file.xlsx')//Change file name here or give     file path
-   });
 
 
 // Get Financial Dataset

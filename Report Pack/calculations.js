@@ -25,25 +25,28 @@ const logFinancialDS = () => {
 
 // Calculate Card Payments Value - Month by Month
 const calcCardPaymentsVal = async (ds) => {
-    try {
-        var dateTo = new Date()
-        var amount = Array(12).fill(0)
-        for (var i = 0; i < ds.length; i++) {
-            var dateString = ds[i][23]
-            var dateParts = dateString.split("/");
-            // month is 0-based, that's why we need dataParts[1] - 1
-            var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
-            var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
-            if (ds[i][9] == 'DEBIT_CREDIT_CARD_API' && ds[i][10] == 'Approved') {
-                if (datediff < 12) {
-                    amount[datediff] += Number(ds[i][17])
+    return new Promise((res, err) => {
+        try {
+            var dateTo = new Date()
+            var amount = Array(12).fill(0)
+            for (var i = 0; i < ds.length; i++) {
+                var dateString = ds[i][23]
+                var dateParts = dateString.split("/");
+                // month is 0-based, that's why we need dataParts[1] - 1
+                var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+                var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+                if (ds[i][9] == 'DEBIT_CREDIT_CARD_API' && ds[i][10] == 'Approved') {
+                    if (datediff < 12) {
+                        amount[datediff] += Number(ds[i][17])
+                    }
                 }
             }
+            res(amount);
+            
+        } catch(error) {
+            err(error)
         }
-        console.log(amount);
-    } catch(err) {
-        console.log(err)
-    }
+    });
 }
 
 
@@ -65,6 +68,7 @@ const calcCardPayApprov = async (ds) => {
             }
         }
         console.log(approved);
+        return approved;
     } catch(err) {
         console.log(err)
     }
