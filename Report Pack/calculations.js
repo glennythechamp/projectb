@@ -52,26 +52,27 @@ const calcCardPaymentsVal = async (ds) => {
 
 // Calculate number of approved card payments, month by month
 const calcCardPayApprov = async (ds) => {
-    try {
-        var dateTo = new Date()
-        var approved = Array(13).fill(0)
-        for (var i = 0; i < ds.length; i++) {
-            var dateString = ds[i][23]
-            var dateParts = dateString.split("/");
-            // month is 0-based, that's why we need dataParts[1] - 1
-            var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
-            var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
-            if (ds[i][9] == 'DEBIT_CREDIT_CARD_API' && ds[i][10] == 'Approved') {
-                if (datediff < 13) {
-                    approved[datediff]++
+    return new Promise((res, err) => {
+        try {
+            var dateTo = new Date()
+            var approved = Array(13).fill(0)
+            for (var i = 0; i < ds.length; i++) {
+                var dateString = ds[i][23]
+                var dateParts = dateString.split("/");
+                // month is 0-based, that's why we need dataParts[1] - 1
+                var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+                var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+                if (ds[i][9] == 'DEBIT_CREDIT_CARD_API' && ds[i][10] == 'Approved') {
+                    if (datediff < 13) {
+                        approved[datediff]++
+                    }
                 }
             }
+            res(approved)
+        } catch(error) {
+            err(error)
         }
-        console.log(approved);
-        return approved;
-    } catch(err) {
-        console.log(err)
-    }
+    });
 }
 
 // Calculate average surcharge rate of card payments, month by month

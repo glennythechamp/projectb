@@ -5,6 +5,7 @@ import Workbook from "exceljs";
 
 var financialDataset = [];
 var cardPayVals = [];
+var cardPayApproved = [];
 
 getFinancialDSArr().then(function(result) {
     financialDataset = result;
@@ -24,6 +25,7 @@ setTimeout(function() {
   })
 }, 3000);
 
+// Write Approved Card Payments Value
 setTimeout(function() {
   cardPayVals.unshift("Value of Approved Payments") 
   var workbook = new Workbook.Workbook()
@@ -37,7 +39,26 @@ setTimeout(function() {
 }, 5000)
 
 // Calculate Approved Card Transactions
-setTimeout(function() {calcCardPayApprov(financialDataset)}, 3000);
+setTimeout(function() { 
+  calcCardPayApprov(financialDataset).then(function(result) {
+    cardPayApproved = result
+  })
+}, 3000);
+
+
+// Write Approved Card Transactions
+setTimeout(function() {
+  cardPayApproved.unshift("Count of Approved Payments") 
+  var workbook = new Workbook.Workbook()
+    workbook.xlsx.readFile('file.xlsx').then(function () {//Change file name here or give file path 
+      var sheet = workbook.getWorksheet('Sheet1');
+      const row6 = sheet.getRow(6)
+      row6.values = cardPayApproved
+      row6.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+      workbook.xlsx.writeFile('file.xlsx')//Change file name here or give     file path
+  })
+}, 5000)
+
 
 // Average Surcharge rate % of Approved Card Payments – Month By Month
 setTimeout(function() {calcAvgSurcharRateMBM(financialDataset)}, 3000);
