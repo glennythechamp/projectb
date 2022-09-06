@@ -12,6 +12,10 @@ var cardPayVals = [];
 var cardPayApproved = [];
 var cardAvgSurch = [];
 var workbook = new Workbook.Workbook()
+var dates = new Array(15)
+
+
+
 // Fetch Dataset File
 await getFinancialDataset()
 
@@ -19,7 +23,6 @@ await getFinancialDataset()
 await getReportPackTempl()
 
 // Convert Fetched Dataset File .csv to array and assign it to the financialDataset variable
-
 setTimeout(function() {
   getFinancialDSArr().then(function(result) {
       financialDataset = result;
@@ -34,10 +37,20 @@ setTimeout(function() {console.log(financialDataset[0])}, 5000);
 
 // Fill out dates for dataset
 setTimeout(function() {
-  
+  for (var i = 2; i < dates.length; i++) {
+    var date = new Date();
+    date.setMonth(date.getMonth() - i);
+    var dateStr = date.getMonth()+2 + "-" + date.getFullYear()
+    dates[i] = dateStr
+  }
 
-
-})
+  workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {
+    var sheet = workbook.getWorksheet('Sheet1');
+    const row5 = sheet.getRow(5)
+    row5.values = dates
+    workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE) 
+  });
+}, 4800)
 
 
 // Please note seperate read/write
@@ -58,7 +71,7 @@ setTimeout(function() {
 // Write Approved Card Payments Value
 setTimeout(function() {
   cardPayVals.unshift("Value of Approved Payments") 
-  
+
     workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
       var sheet = workbook.getWorksheet('Sheet1');
       const row6 = sheet.getRow(8)
@@ -99,7 +112,6 @@ setTimeout(function() {
 
 setTimeout(function() {
   cardAvgSurch.unshift("Average Surcharge Rate") 
-  
     workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
       var sheet = workbook.getWorksheet('Sheet1');
       const row6 = sheet.getRow(9)
