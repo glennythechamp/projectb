@@ -1,1 +1,27 @@
-Requires S3 to access .xlxs files and User/Ip based security?
+
+
+# Initial Configuration (One Time Setup)
+
+<h2>Step 1.</h2>
+Create an S3 Bucket on Digital Ocean and upload the contents of the report pack excel modules to the bucket
+
+
+<h2>Step 2.</h2>
+Please set the following environment variables:
+S3_BUCKET ~ Name of the S3 bucket you created 
+DS_FILE_NAME ~ The name of the dataset you uploaded to the S3 Bucket
+REPORT_PACK_TEMPLATE ~ The name of the report pack template you uploaded to the S3 Bucket
+S3_ACCESS_KEY ~ Provided to you by Digital Ocean Spaces when the S3 Bucket is created
+S3_SECRET_ACCESS_KEY ~ Provided to you by Digital Ocean Spaces when the S3 Bucket is created
+
+
+<h2>Step 3.</h2>
+Run the program using:
+<code>node run index.js</code>
+
+If the packages haven't been added, run the following, while in the Report Pack directory
+<code>npm i</code>
+
+<h2>Step 4.</g2>
+View the generated reports
+
