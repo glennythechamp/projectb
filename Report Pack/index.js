@@ -1,6 +1,6 @@
 
 import { s3Client, /*uploadParams*/ /*uploadObject*/ getFinancialDataset, financial_ds_params, getFinancialDSArr, getReportPackTempl } from "./dataset_s3_fetch.mjs"
-import { logFinancialDS, calcCardPaymentsVal, calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits } from "./calculations.js"
+import { logFinancialDS, calcCardPaymentsVal, calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM } from "./calculations.js"
 import Workbook from "exceljs";
 import * as dotenv from 'dotenv'
 
@@ -11,6 +11,12 @@ var financialDataset = [];
 var cardPayVals = [];
 var cardPayApproved = [];
 var cardAvgSurch = [];
+
+// Direct Debits
+var ddPayVals = [];
+
+
+
 var workbook = new Workbook.Workbook()
 var dates = new Array(15)
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -137,6 +143,32 @@ setTimeout(function() {
 // Number of Dishonored Direct Debits - Last 30 Day by Day
 // NOTE: The dataset entries end on May, so current date
 // will be set to May 2022 to reflect this.
+
+// Calculate approved direct debit payments month by month
+setTimeout(function() {
+  calcApprovDDPayMBM(financialDataset).then(function(result) {
+    ddPayVals = result;
+  });
+}, 3000);
+
+// Write approved direct debit payments
+setTimeout(function() {
+  ddPayVals.unshift("Value of Approved Payments") 
+    workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
+      var sheet = workbook.getWorksheet('Sheet1');
+      const row6 = sheet.getRow(12)
+      row6.values = ddPayVals
+      row6.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+      workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE)//Change file name here or give     file path
+  })
+}, 5300)
+
+
+
+
+
+
+
 setTimeout(function() {calcDeclDirectDebits(financialDataset)}, 3000);
 
 

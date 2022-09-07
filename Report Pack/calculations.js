@@ -64,6 +64,7 @@ const calcCardPayApprov = async (ds) => {
                 var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
                 if (ds[i][9] == 'DEBIT_CREDIT_CARD_API' && ds[i][10] == 'Approved') {
                     if (datediff < 13) {
+                        
                         approved[datediff]++
                     }
                 }
@@ -110,18 +111,27 @@ const calcAvgSurcharRateMBM = async (ds) => {
 
 // Calculate Approved Direct Debit Payments Month by Month
 const calcApprovDDPayMBM = async (ds) => {
-    try {
-        var dateTo = new Date()
-        var directDebitPaymentsVal = Array(12).fill(0)
-        for (var i = 0; i < ds.length; i++) {
-
-
-
-
+    return new Promise((res, err) => {
+        try {
+            var dateTo = new Date()
+            var directDebitPaymentsVal = Array(13).fill(0)
+            for (var i = 0; i < ds.length; i++) {
+                var dateString = ds[i][23]
+                var dateParts = dateString.split("/");
+                // month is 0-based, that's why we need dataParts[1] - 1
+                var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+                var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+                if (ds[i][9] == 'BRANCH_PAYMENT' && ds[i][10] == 'Approved') {
+                    if (datediff < 13) {
+                        directDebitPaymentsVal[datediff] += Number(ds[i][17]);
+                    }
+                }
+            }
+            res(directDebitPaymentsVal)
+        } catch (error) {
+            err(error)
         }
-    } catch (err) {
-        console.log(err)
-    }
+    });
 }
 
 
@@ -158,4 +168,4 @@ const calcDeclDirectDebits = async (ds) => {
 
 
 export { logFinancialDS, calcCardPaymentsVal,
-         calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits }
+         calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM }
