@@ -13,7 +13,9 @@ var cardPayApproved = [];
 var cardAvgSurch = [];
 var workbook = new Workbook.Workbook()
 var dates = new Array(15)
-
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
 
 
 // Fetch Dataset File
@@ -39,8 +41,9 @@ setTimeout(function() {console.log(financialDataset[0])}, 5000);
 setTimeout(function() {
   for (var i = 2; i < dates.length; i++) {
     var date = new Date();
-    date.setMonth(date.getMonth() - i);
-    var dateStr = date.getMonth()+2 + "-" + date.getFullYear()
+    var point = i-2 
+    date.setMonth(date.getMonth()-point);
+    var dateStr = monthNames[date.getMonth()] + "-" + date.getFullYear()
     dates[i] = dateStr
   }
 
@@ -48,6 +51,15 @@ setTimeout(function() {
     var sheet = workbook.getWorksheet('Sheet1');
     const row5 = sheet.getRow(5)
     row5.values = dates
+    row5.alignment = {horizontal: "center", vertical: "center"}
+    row5.font = {size: 16, color: {argb: "ea862c"}}
+    for (var i = 2; i < dates.length; i++) {
+      if (dates[i]) {
+        sheet.getColumn(i).width = 15
+      }
+    } 
+
+
     workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE) 
   });
 }, 4800)
@@ -71,7 +83,6 @@ setTimeout(function() {
 // Write Approved Card Payments Value
 setTimeout(function() {
   cardPayVals.unshift("Value of Approved Payments") 
-
     workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
       var sheet = workbook.getWorksheet('Sheet1');
       const row6 = sheet.getRow(8)
@@ -120,10 +131,6 @@ setTimeout(function() {
       workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE)//Change file name here or give     file path
   })
 }, 5200)
-
-
-
-
 
 
 // Direct Debits
