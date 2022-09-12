@@ -1,6 +1,6 @@
 
 import { s3Client, /*uploadParams*/ /*uploadObject*/ getFinancialDataset, financial_ds_params, getFinancialDSArr, getReportPackTempl } from "./dataset_s3_fetch.mjs"
-import { logFinancialDS, calcCardPaymentsVal, calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM } from "./calculations.js"
+import { logFinancialDS, calcCardPaymentsVal, calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM, dishDirectDebitsCount, calcReminSent } from "./calculations.js"
 import Workbook from "exceljs";
 import * as dotenv from 'dotenv'
 
@@ -14,7 +14,10 @@ var cardAvgSurch = [];
 
 // Direct Debits
 var ddPayVals = [];
+var declDDPayCount = [];
+var remindersSent = [];
 
+//
 
 
 var workbook = new Workbook.Workbook()
@@ -162,6 +165,46 @@ setTimeout(function() {
       workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE)//Change file name here or give     file path
   })
 }, 5300)
+
+// Calculate number of dishonored direct debit payments month by month
+setTimeout(function() {
+  dishDirectDebitsCount(financialDataset).then(function(result) {
+    declDDPayCount = result;
+  });
+}, 3000);
+
+// Write decl. direct debit payments
+setTimeout(function() {
+  declDDPayCount.unshift("Dishonored Direct Debits") 
+    workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
+      var sheet = workbook.getWorksheet('Sheet1');
+      const row6 = sheet.getRow(13)
+      row6.values = declDDPayCount
+      row6.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+      workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE)//Change file name here or give     file path
+  })
+}, 5400)
+
+
+// Calculate number of reminders sent
+setTimeout(function() {
+  calcReminSent(financialDataset).then(function(result) {
+    remindersSent = result;
+  });
+}, 3000);
+
+// Write number of reminders sent
+setTimeout(function() {
+  remindersSent.unshift("Reminders Sent") 
+    workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
+      var sheet = workbook.getWorksheet('Sheet1');
+      const row6 = sheet.getRow(24)
+      row6.values = remindersSent
+      row6.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+      workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE)//Change file name here or give     file path
+  })
+}, 5500)
+
 
 
 

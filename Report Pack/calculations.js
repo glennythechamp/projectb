@@ -134,6 +134,32 @@ const calcApprovDDPayMBM = async (ds) => {
     });
 }
 
+const dishDirectDebitsCount = async (ds) => {
+    return new Promise((res, err) => {
+        try {
+            var dateTo = new Date()
+            var dishDDCount = Array(13).fill(0)
+            for (var i = 0; i < ds.length; i++) {
+                var dateString = ds[i][23]
+                var dateParts = dateString.split("/");
+                // month is 0-based, that's why we need dataParts[1] - 1
+                var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+                var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+                if (ds[i][9] == 'BRANCH_PAYMENT' && ds[i][10] == 'Declined') {
+                    if (datediff < 13) {
+                        dishDDCount[datediff]++
+                    }
+                }
+            }
+            res(dishDDCount)
+        } catch (error) {
+            err(error)
+        }
+    });
+}
+
+
+
 
 // Declined Direct Debits Day by Day
 const calcDeclDirectDebits = async (ds) => {
@@ -166,6 +192,35 @@ const calcDeclDirectDebits = async (ds) => {
 
 
 
+// Calculate Reminders Sent MBM
+const calcReminSent = async (ds) => {
+    return new Promise((res, err) => {
+        try {
+            var dateTo = new Date()
+            var remindersSent = Array(13).fill(0)
+            for (var i = 0; i < ds.length; i++) {
+                var dateString = ds[i][23]
+                var dateParts = dateString.split("/");
+                // month is 0-based, that's why we need dataParts[1] - 1
+                var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+                var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+                if (ds[i][19] == 'Yes') {
+                    if (datediff < 13) {
+                        remindersSent[datediff]++
+                    }
+                }
+            }
+            res(remindersSent)
+        } catch(error) {
+            err(error)
+        }
+    });
+}
+
+
+
+
+
 
 export { logFinancialDS, calcCardPaymentsVal,
-         calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM }
+         calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM, dishDirectDebitsCount, calcReminSent  }
