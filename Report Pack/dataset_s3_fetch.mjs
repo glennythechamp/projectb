@@ -14,8 +14,8 @@ dotenv.config()
 
 // Initialize the S3 Client Object to Fetch Dataset and Template
 const s3Client = new S3Client({
-  endpoint: "https://sgp1.digitaloceanspaces.com",
-  region: "sgp1",
+  endpoint: "https://s3-us-west-1.amazonaws.com",
+  region: "us-west-1",
   credentials: {
       // Typically set in environment variables .env file
       accessKeyId: process.env.S3_ACCESS_KEY,
