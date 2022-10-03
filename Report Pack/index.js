@@ -6,7 +6,7 @@ import express from 'express';
 
 dotenv.config() 
 
-const excelGen = async () => {
+const reportGen = async () => {
   // Declare Variables - To Be Used For Calculations
   var financialDataset = [];
   var cardPayVals = [];
@@ -151,4 +151,4 @@ const excelGen = async () => {
 
 
 // Converted program to excelGen function to incorporate webserver middleware to run and serve excel file result
-excelGen();
+reportGen();
