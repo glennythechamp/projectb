@@ -24,7 +24,7 @@ const s3Client = new S3Client({
 });
 
 // Set the S3 Bucket and Key to Fetch the Dataset
-export const financial_ds_params = {
+export var financial_ds_params = {
   // Typically set in environment variables .env file
   Bucket: process.env.S3_BUCKET,
   Key: process.env.DS_FILE_NAME,
@@ -38,7 +38,7 @@ export const report_pack_templ_params = {
 };
 
 // Function to retrieve the financial_ds
-const getFinancialDataset = async () => {
+const getFinancialDataset = async (dStr) => {
   try {
     const downloadPath = process.env.DS_FILE_NAME;
     const outputStream = createWriteStream(downloadPath);
@@ -62,7 +62,7 @@ const getReportPackTempl = async () => {
     const inputStream = data.Body;
     inputStream.pipe(outputStream);
     outputStream.on('finish', () => {
-      console.log(`downloaded the financial_ds successfully`);
+      console.log(`downloaded the template successfully`);
     });
   } catch (err) {
     console.log('Error', err);

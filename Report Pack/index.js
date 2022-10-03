@@ -1,4 +1,4 @@
-import { s3Client, /*uploadParams*/ /*uploadObject*/ getFinancialDataset, financial_ds_params, getFinancialDSArr, getReportPackTempl } from "./dataset_s3_fetch.mjs"
+import { s3Client, /*uploadParams*/ /*uploadObject*/ getFinancialDataset, financial_ds_params, getFinancialDSArr, getReportPackTempl, report_pack_templ_params } from "./dataset_s3_fetch.mjs"
 import { logFinancialDS, calcCardPaymentsVal, calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM, dishDirectDebitsCount, calcReminSent, calcDDPayApprov } from "./calculations.js"
 import Workbook from "exceljs";
 import * as dotenv from 'dotenv';
@@ -24,6 +24,9 @@ const reportGen = async () => {
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
+
+  var dStr = new Date().toISOString()
+
 
   // Fetch Dataset File
   await getFinancialDataset()
@@ -148,7 +151,20 @@ const reportGen = async () => {
   }, 5000)
 }
 
+var app = express()
+
+app.get("/download", async function (req, res, next) {
+  await reportGen();
+  res.download('./report_pack_templ.xlsx')
+})
+app.listen(3000)
+
+
+
+
+
+
 
 
 // Converted program to excelGen function to incorporate webserver middleware to run and serve excel file result
-reportGen();
+
