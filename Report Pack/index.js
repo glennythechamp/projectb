@@ -1,8 +1,8 @@
-
 import { s3Client, /*uploadParams*/ /*uploadObject*/ getFinancialDataset, financial_ds_params, getFinancialDSArr, getReportPackTempl } from "./dataset_s3_fetch.mjs"
-import { logFinancialDS, calcCardPaymentsVal, calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM, dishDirectDebitsCount, calcReminSent } from "./calculations.js"
+import { logFinancialDS, calcCardPaymentsVal, calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM, dishDirectDebitsCount, calcReminSent, calcDDPayApprov } from "./calculations.js"
 import Workbook from "exceljs";
-import * as dotenv from 'dotenv'
+import * as dotenv from 'dotenv';
+import express from 'express';
 
 dotenv.config() 
 
@@ -13,6 +13,7 @@ var cardPayApproved = [];
 var cardAvgSurch = [];
 
 // Direct Debits
+var ddCount = []
 var ddPayVals = [];
 var declDDPayCount = [];
 var remindersSent = [];
@@ -40,12 +41,6 @@ setTimeout(function() {
   });
 }, 2000)
 
-
-
-// Card Payments
-// Test first entry of dataset
-setTimeout(function() {console.log(financialDataset[0])}, 5000);
-
 // Fill out dates for dataset
 setTimeout(function() {
   for (var i = 2; i < dates.length; i++) {
@@ -67,11 +62,9 @@ setTimeout(function() {
         sheet.getColumn(i).width = 15
       }
     } 
-
-
     workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE) 
   });
-}, 4800)
+}, 3000)
 
 
 // Please note seperate read/write
@@ -89,17 +82,6 @@ setTimeout(function() {
   })
 }, 3000);
 
-// Write Approved Card Payments Value
-setTimeout(function() {
-  cardPayVals.unshift("Value of Approved Payments") 
-    workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
-      var sheet = workbook.getWorksheet('Sheet1');
-      const row6 = sheet.getRow(8)
-      row6.values = cardPayVals
-      row6.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
-      workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE)//Change file name here or give     file path
-  })
-}, 5000)
 
 // Calculate Approved Card Transactions
 setTimeout(function() { 
@@ -107,111 +89,74 @@ setTimeout(function() {
     cardPayApproved = result
   })
 }, 3000);
-
-// Write Approved Card Transactions
-setTimeout(function() {
-  cardPayApproved.unshift("Count of Approved Payments") 
-    workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
-      var sheet = workbook.getWorksheet('Sheet1');
-      const row6 = sheet.getRow(7)
-      row6.values = cardPayApproved
-      row6.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
-      workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE)//Change file name here or give     file path
-  })
-}, 5100)
-
-
-
-
 // Average Surcharge rate % of Approved Card Payments – Month By Month
 setTimeout(function() {
   calcAvgSurcharRateMBM(financialDataset).then(function(result) {
     cardAvgSurch = result;
   });
 }, 3000);
-
-setTimeout(function() {
-  cardAvgSurch.unshift("Average Surcharge Rate") 
-    workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
-      var sheet = workbook.getWorksheet('Sheet1');
-      const row6 = sheet.getRow(9)
-      row6.values = cardAvgSurch
-      row6.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
-      workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE)//Change file name here or give     file path
-  })
-}, 5200)
-
-
 // Direct Debits
 // Number of Dishonored Direct Debits - Last 30 Day by Day
 // NOTE: The dataset entries end on May, so current date
 // will be set to May 2022 to reflect this.
-
 // Calculate approved direct debit payments month by month
 setTimeout(function() {
   calcApprovDDPayMBM(financialDataset).then(function(result) {
     ddPayVals = result;
   });
 }, 3000);
-
-// Write approved direct debit payments
-setTimeout(function() {
-  ddPayVals.unshift("Value of Approved Payments") 
-    workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
-      var sheet = workbook.getWorksheet('Sheet1');
-      const row6 = sheet.getRow(12)
-      row6.values = ddPayVals
-      row6.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
-      workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE)//Change file name here or give     file path
-  })
-}, 5300)
-
 // Calculate number of dishonored direct debit payments month by month
 setTimeout(function() {
   dishDirectDebitsCount(financialDataset).then(function(result) {
     declDDPayCount = result;
   });
 }, 3000);
-
-// Write decl. direct debit payments
-setTimeout(function() {
-  declDDPayCount.unshift("Dishonored Direct Debits") 
-    workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
-      var sheet = workbook.getWorksheet('Sheet1');
-      const row6 = sheet.getRow(13)
-      row6.values = declDDPayCount
-      row6.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
-      workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE)//Change file name here or give     file path
-  })
-}, 5400)
-
-
 // Calculate number of reminders sent
 setTimeout(function() {
   calcReminSent(financialDataset).then(function(result) {
     remindersSent = result;
   });
+
+}, 3000);
+setTimeout(function() {
+  calcDDPayApprov(financialDataset).then(function(result) {
+    ddCount = result;
+  });
 }, 3000);
 
-// Write number of reminders sent
+
+// Write Calculations
 setTimeout(function() {
-  remindersSent.unshift("Reminders Sent") 
+  cardPayVals.unshift("Value of Approved Payments")
+  ddPayVals.unshift("Value of Approved Payments") 
+  cardPayApproved.unshift("Count of Approved Payments")
+  cardAvgSurch.unshift("Average Surcharge Rate")
+  declDDPayCount.unshift("Dishonored Direct Debits")
+  remindersSent.unshift("Reminders Sent")
+  ddCount.unshift("Count of Approved Payments")     
     workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
-      var sheet = workbook.getWorksheet('Sheet1');
-      const row6 = sheet.getRow(24)
-      row6.values = remindersSent
+      var sheet = workbook.getWorksheet('Sheet1');      
+      const row6 = sheet.getRow(8)
+      row6.values = cardPayVals
       row6.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+      const row7 = sheet.getRow(7)
+      row7.values = cardPayApproved
+      row7.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+      const row9 = sheet.getRow(9)
+      row9.values = cardAvgSurch
+      row9.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+      const row11 = sheet.getRow(11)
+      row11.values = ddCount
+      row11.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+      const row12 = sheet.getRow(12)
+      row12.values = ddPayVals
+      row12.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+      const row13 = sheet.getRow(13)
+      row13.values = declDDPayCount
+      row13.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+      const row24 = sheet.getRow(24)
+      row24.values = remindersSent
+      row24.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
       workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE)//Change file name here or give     file path
   })
-}, 5500)
-
-
-
-
-
-
-
-
-setTimeout(function() {calcDeclDirectDebits(financialDataset)}, 3000);
-
-
+}, 5000)

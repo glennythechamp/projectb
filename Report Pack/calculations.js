@@ -219,8 +219,34 @@ const calcReminSent = async (ds) => {
 
 
 
+// Calculate number of approved card payments, month by month
+const calcDDPayApprov = async (ds) => {
+    return new Promise((res, err) => {
+        try {
+            var dateTo = new Date()
+            var approved = Array(13).fill(0)
+            for (var i = 0; i < ds.length; i++) {
+                var dateString = ds[i][23]
+                var dateParts = dateString.split("/");
+                // month is 0-based, that's why we need dataParts[1] - 1
+                var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+                var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+                if (ds[i][9] == 'BRANCH_PAYMENT' && ds[i][10] == 'Approved') {
+                    if (datediff < 13) {
+                        approved[datediff]++
+                    }
+                }
+            }
+            res(approved)
+        } catch(error) {
+            err(error)
+        }
+    });
+}
+
+
 
 
 
 export { logFinancialDS, calcCardPaymentsVal,
-         calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM, dishDirectDebitsCount, calcReminSent  }
+         calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM, dishDirectDebitsCount, calcReminSent, calcDDPayApprov  }
