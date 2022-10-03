@@ -155,8 +155,13 @@ var app = express()
 
 app.get("/download", async function (req, res, next) {
   await reportGen();
-  res.download('./report_pack_templ.xlsx')
+  setTimeout(function() { 
+    res.download('./report_pack_templ.xlsx')
+  }, 5500)
 })
+
+
+
 app.listen(3000)
 
 
