@@ -1,10 +1,10 @@
-import { s3Client, /*uploadParams*/ /*uploadObject*/ getFinancialDataset, financial_ds_params, getFinancialDSArr, getReportPackTempl, report_pack_templ_params } from "./dataset_s3_fetch.mjs"
-import { logFinancialDS, calcCardPaymentsVal, calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM, dishDirectDebitsCount, calcReminSent, calcDDPayApprov } from "./calculations.js"
-import Workbook from "exceljs";
-import * as dotenv from 'dotenv';
-import express from 'express';
-
-dotenv.config() 
+//import { s3Client, /*uploadParams*/ /*uploadObject*/ getFinancialDataset, financial_ds_params, getFinancialDSArr, getReportPackTempl, report_pack_templ_params } from "./dataset_s3_fetch.mjs"
+//import { logFinancialDS, calcCardPaymentsVal, calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM, dishDirectDebitsCount, calcReminSent, calcDDPayApprov } from "./calculations.js"
+const dsfetch = require('./dataset_s3_fetch.js')
+const calcs = require('./calculations')
+const express = require('express')
+const ExcelJS = require('exceljs');
+require('dotenv').config()
 
 const reportGen = async () => {
   // Declare Variables - To Be Used For Calculations
@@ -19,22 +19,22 @@ const reportGen = async () => {
   var declDDPayCount = [];
   var remindersSent = [];
 
-  var workbook = new Workbook.Workbook()
+  var workbook = new ExcelJS.Workbook()
   var dates = new Array(15)
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
 
-  var dStr = new Date().toISOString()
-
+  var dStr = Date.now().toString()
+  var fileName = process.env.REPORT_PACK_DATE + dStr + ".xlsx"
 
   // Fetch Dataset File
-  await getFinancialDataset()
+  await dsfetch.getFinancialDataset()
   // Fetch Report Pack Template File
-  await getReportPackTempl()
+  await dsfetch.getReportPackTempl(dStr)
   // Convert Fetched Dataset File .csv to array and assign it to the financialDataset variable
   setTimeout(function() {
-    getFinancialDSArr().then(function(result) {
+    dsfetch.getFinancialDSArr().then(function(result) {
         financialDataset = result;
     });
   }, 2000)
@@ -49,7 +49,7 @@ const reportGen = async () => {
       dates[i] = dateStr
     }
 
-    workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {
+    workbook.xlsx.readFile(fileName).then(function () {
       var sheet = workbook.getWorksheet('Sheet1');
       const row5 = sheet.getRow(5)
       row5.values = dates
@@ -60,62 +60,63 @@ const reportGen = async () => {
           sheet.getColumn(i).width = 15
         }
       } 
-      workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE) 
+      workbook.xlsx.writeFile(fileName) 
     });
-  }, 3000)
+  }, 2500)
 
   // Calculate Approved Card Payments Value
   setTimeout(function() { 
-    calcCardPaymentsVal(financialDataset).then(function(result) {
+    calcs.calcCardPaymentsVal(financialDataset).then(function(result) {
       cardPayVals = result
     })
-  }, 3000);
+  }, 2500);
 
 
   // Calculate Approved Card Transactions
   setTimeout(function() { 
-    calcCardPayApprov(financialDataset).then(function(result) {
+    calcs.calcCardPayApprov(financialDataset).then(function(result) {
       cardPayApproved = result
     })
-  }, 3000);
+  }, 2500);
   // Average Surcharge rate % of Approved Card Payments – Month By Month
   setTimeout(function() {
-    calcAvgSurcharRateMBM(financialDataset).then(function(result) {
+    calcs.calcAvgSurcharRateMBM(financialDataset).then(function(result) {
       cardAvgSurch = result;
     });
-  }, 3000);
+  }, 2500);
   // Direct Debits
   // Number of Dishonored Direct Debits - Last 30 Day by Day
   // NOTE: The dataset entries end on May, so current date
   // will be set to May 2022 to reflect this.
   // Calculate approved direct debit payments month by month
   setTimeout(function() {
-    calcApprovDDPayMBM(financialDataset).then(function(result) {
+    calcs.calcApprovDDPayMBM(financialDataset).then(function(result) {
       ddPayVals = result;
     });
-  }, 3000);
+  }, 2500);
   // Calculate number of dishonored direct debit payments month by month
   setTimeout(function() {
-    dishDirectDebitsCount(financialDataset).then(function(result) {
+    calcs.dishDirectDebitsCount(financialDataset).then(function(result) {
       declDDPayCount = result;
     });
-  }, 3000);
+  }, 2500);
   // Calculate number of reminders sent
   setTimeout(function() {
-    calcReminSent(financialDataset).then(function(result) {
+    calcs.calcReminSent(financialDataset).then(function(result) {
       remindersSent = result;
     });
 
-  }, 3000);
+  }, 2500);
   setTimeout(function() {
-    calcDDPayApprov(financialDataset).then(function(result) {
+    calcs.calcDDPayApprov(financialDataset).then(function(result) {
       ddCount = result;
     });
-  }, 3000);
+  }, 2500);
 
 
   // Write Calculations
   setTimeout(function() {
+    try {
     cardPayVals.unshift("Value of Approved Payments")
     ddPayVals.unshift("Value of Approved Payments") 
     cardPayApproved.unshift("Count of Approved Payments")
@@ -123,7 +124,7 @@ const reportGen = async () => {
     declDDPayCount.unshift("Dishonored Direct Debits")
     remindersSent.unshift("Reminders Sent")
     ddCount.unshift("Count of Approved Payments")     
-      workbook.xlsx.readFile(process.env.REPORT_PACK_TEMPLATE).then(function () {//Change file name here or give file path 
+      workbook.xlsx.readFile(fileName).then(function () {//Change file name here or give file path 
         var sheet = workbook.getWorksheet('Sheet1');      
         const row6 = sheet.getRow(8)
         row6.values = cardPayVals
@@ -146,23 +147,27 @@ const reportGen = async () => {
         const row24 = sheet.getRow(24)
         row24.values = remindersSent
         row24.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
-        workbook.xlsx.writeFile(process.env.REPORT_PACK_TEMPLATE)//Change file name here or give     file path
+        workbook.xlsx.writeFile(fileName)//Change file name here or give     file path
     })
-  }, 5000)
+    } catch(err) {
+      console.log(err)
+    }  }, 3000)
+
+    return fileName;
 }
 
-var app = express()
 
+app = express()
 app.get("/download", async function (req, res, next) {
-  await reportGen();
+  const file = await reportGen();
   setTimeout(function() { 
-    res.download('./report_pack_templ.xlsx')
-  }, 5500)
+    res.download('./' + file)
+  }, 3300)
 })
 
 
 
-app.listen(3000)
+app.listen(3000, '0.0.0.0');
 
 
 
