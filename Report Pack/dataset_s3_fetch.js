@@ -93,8 +93,6 @@ module.exports = {
       }
     });
   }
-
-
 }
 
 // export const uploadParams = {
