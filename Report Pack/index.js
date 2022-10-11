@@ -4,7 +4,15 @@ const dsfetch = require('./dataset_s3_fetch.js')
 const calcs = require('./calculations')
 const express = require('express')
 const ExcelJS = require('exceljs');
+const schedule = require('node-schedule');
+const nodemailer = require("nodemailer");
+var bodyParser = require('body-parser')
+var jsonParser = bodyParser.json()
 require('dotenv').config()
+
+
+
+
 
 const reportGen = async () => {
   // Declare Variables - To Be Used For Calculations
@@ -157,7 +165,25 @@ const reportGen = async () => {
 }
 
 
-app = express()
+const app = express()
+
+
+
+async function sendmail() {
+  
+  let transporter = nodemailer.createTransport({
+    host: "smtp-mail.outlook.com",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_CLIENT_USER, // generated ethereal user
+      pass: process.env.EMAIL_CLIENT_PASS, // generated ethereal password
+    },
+  });
+
+}
+
+
 app.get("/download", async function (req, res, next) {
   const file = await reportGen();
   setTimeout(function() { 
@@ -166,6 +192,43 @@ app.get("/download", async function (req, res, next) {
 })
 
 
+app.post("/email", jsonParser,async function (req, res, next) {
+  const file = await reportGen()
+  const email = req.body.email
+  console.log(email)
+  setTimeout(async function() { 
+    let transporter = nodemailer.createTransport({
+      host: "smtp-mail.outlook.com",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: process.env.EMAIL_CLIENT_USER, // generated ethereal user
+        pass: process.env.EMAIL_CLIENT_PASS, // generated ethereal password
+      },
+    });
+    let info = await transporter.sendMail({
+      from: '"FeeSynergy" <vt123l@outlook.com>', // sender address
+      to: email, // list of receivers
+      subject: "RE: Generated Report Pack", // Subject line
+      text: "Greetings, we've received your request to receive your report pack by mail. Please see the attachment above to the financial figures.", // plain text body
+      html: "Greetings, we've received your request to receive your report pack by mail. Please see the attachment above to the financial figures.", // html body
+      attachments: [
+        {   // utf-8 string as an attachment
+            path: './' + file
+        },
+      ]
+    });
+
+
+  }, 3300)
+})
+
+
+
+
+
+
+app.use('/', express.static('public'))
 
 app.listen(3000, '0.0.0.0');
 

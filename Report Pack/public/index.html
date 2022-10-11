@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Pack Generator</title>
+</head>
+<body>
+    <h1>Report Pack Generator</h1>
+    <br>
+    <hr/>
+    <h2>Download Reports Directly:</h2>
+    <p>Please click <a href="/download">here</a> to download</p>
+    <hr/>
+    <h2>Email Report:</h2>
+    <form action="">
+        <label for="email">Email:</label>
+        <input type="email" id="emin" name="emin">
+        <button onclick="send_email()">Email Report!</button>
+    </form>
+
+
+    <script>
+        
+        
+        function send_email() {
+            
+            const post_email = document.getElementById('emin').value;
+            console.log(post_email)
+            fetch('/email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: post_email})
+            })
+        }
+
+    </script>
+
+
+</body>
+</html>
