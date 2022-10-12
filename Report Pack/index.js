@@ -10,10 +10,6 @@ var bodyParser = require('body-parser')
 var jsonParser = bodyParser.json()
 require('dotenv').config()
 
-
-
-
-
 const reportGen = async () => {
   // Declare Variables - To Be Used For Calculations
   var financialDataset = [];
@@ -25,7 +21,11 @@ const reportGen = async () => {
   var ddCount = []
   var ddPayVals = [];
   var declDDPayCount = [];
+  
+  // Debtor Man
   var remindersSent = [];
+  var droppedCrSc = [];
+  var crScDrTr = [];
 
   var workbook = new ExcelJS.Workbook()
   var dates = new Array(15)
@@ -79,6 +79,22 @@ const reportGen = async () => {
     })
   }, 2500);
 
+  // Calculate Dropped Credit Scores
+  setTimeout(function() { 
+    calcs.calcDroppedCrSc(financialDataset).then(function(result) {
+      droppedCrSc = result
+    })
+  }, 2500);
+
+
+  setTimeout(function() { 
+    calcs.crScDTr(financialDataset).then(function(result) {
+      crScDrTr = result
+    })
+  }, 2500);
+
+
+
 
   // Calculate Approved Card Transactions
   setTimeout(function() { 
@@ -131,15 +147,20 @@ const reportGen = async () => {
     cardAvgSurch.unshift("Average Surcharge Rate")
     declDDPayCount.unshift("Dishonored Direct Debits")
     remindersSent.unshift("Reminders Sent")
-    ddCount.unshift("Count of Approved Payments")     
+    ddCount.unshift("Count of Approved Payments")
+    droppedCrSc.unshift("Count of Clients Dropped Credit Scores")
+    crScDrTr[0].unshift("Good")
+    crScDrTr[1].unshift("Fair")
+    crScDrTr[2].unshift("Poor")
+    crScDrTr[3].unshift("No Data")
       workbook.xlsx.readFile(fileName).then(function () {//Change file name here or give file path 
         var sheet = workbook.getWorksheet('Sheet1');      
-        const row6 = sheet.getRow(8)
-        row6.values = cardPayVals
-        row6.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
         const row7 = sheet.getRow(7)
-        row7.values = cardPayApproved
+        row7.values = cardPayVals
         row7.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+        const row8 = sheet.getRow(8)
+        row8.values = cardPayApproved
+        row8.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
         const row9 = sheet.getRow(9)
         row9.values = cardAvgSurch
         row9.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
@@ -152,9 +173,31 @@ const reportGen = async () => {
         const row13 = sheet.getRow(13)
         row13.values = declDDPayCount
         row13.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
-        const row24 = sheet.getRow(24)
-        row24.values = remindersSent
-        row24.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+        const row15 = sheet.getRow(15)
+        row15.values = remindersSent
+        row15.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+        const row16 = sheet.getRow(16)
+        row16.values = droppedCrSc
+        row16.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+        const row17 = sheet.getRow(17)
+        row17.values = ['Credit Score Descriptor Trend']
+        row17.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+        const row18 = sheet.getRow(18)
+        row18.values = crScDrTr[0]
+        row18.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+        row18.getCell('A').alignment = { vertical: 'center', horizontal: 'right' }
+        const row19 = sheet.getRow(19)
+        row19.values = crScDrTr[1]
+        row19.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+        row19.getCell('A').alignment = { vertical: 'center', horizontal: 'right' }
+        const row20 = sheet.getRow(20)
+        row20.values = crScDrTr[2]
+        row20.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+        row20.getCell('A').alignment = { vertical: 'center', horizontal: 'right' }
+        const row21 = sheet.getRow(21)
+        row21.values = crScDrTr[3]
+        row21.getCell('A').font = {color: {argb: "4372c5"}, size: 14}
+        row21.getCell('A').alignment = { vertical: 'center', horizontal: 'right' }
         workbook.xlsx.writeFile(fileName)//Change file name here or give     file path
     })
     } catch(err) {
@@ -230,12 +273,12 @@ app.post("/email", jsonParser,async function (req, res, next) {
 
 app.use('/', express.static('public'))
 
-app.listen(3000, '0.0.0.0');
+//app.listen(3000, '0.0.0.0');
 
 
 
 
-
+module.exports = app;
 
 
 

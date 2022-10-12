@@ -244,11 +244,73 @@ module.exports = {
                 err(error)
             }
         });
+    },
+    calcDroppedCrSc: async function (ds) {
+        return new Promise((res, err) => {
+            try {
+                var dateTo = new Date()
+                var dropped = Array(13).fill(0)
+                for (var i = 0; i < ds.length; i++) {
+                    var dateString = ds[i][23]
+                    var dateParts = dateString.split("/");
+                    // month is 0-based, that's why we need dataParts[1] - 1
+                    var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+                    var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+                    if (ds[i][22] == 'Decreased') {
+                        if (datediff < 13) {
+                            dropped[datediff]++
+                        }
+                    }
+                }
+                res(dropped)
+            } catch(error) {
+                err(error)
+            }
+        });
+    },
+    crScDTr: async function (ds) {
+        return new Promise((res, err) => {
+            try {
+                var dateTo = new Date()
+                var Fair = Array(13).fill(0)
+                var Good = Array(13).fill(0)
+                var Poor = Array(13).fill(0)
+                var ND = Array(13).fill(0)
+                for (var i = 0; i < ds.length; i++) {
+                    var dateString = ds[i][23]
+                    var dateParts = dateString.split("/");
+                    // month is 0-based, that's why we need dataParts[1] - 1
+                    var dateFrom = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+                    var datediff = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+                    if (ds[i][21] == 'Poor') {
+                        if (datediff < 13) {
+                            Poor[datediff]++
+                        }
+                    }
+                    if (ds[i][21] == 'Good') {
+                        if (datediff < 13) {
+                            Good[datediff]++
+                        }
+                    }
+                    if (ds[i][21] == 'Fair') {
+                        if (datediff < 13) {
+                            Fair[datediff]++
+                        }
+                    }
+                    if (ds[i][21] == 'No Data') {
+                        if (datediff < 13) {
+                            ND[datediff]++
+                        }
+                    }
+                }
+                var dt = [Good, Fair, Poor, ND]
+                res(dt)
+            } catch(error) {
+                err(error)
+            }
+        });
     }
-
 }
-
-
 
 /*export { logFinancialDS, calcCardPaymentsVal,
          calcCardPayApprov, calcAvgSurcharRateMBM, calcDeclDirectDebits, calcApprovDDPayMBM, dishDirectDebitsCount, calcReminSent, calcDDPayApprov  }

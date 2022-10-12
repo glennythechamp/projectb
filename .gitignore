@@ -1,1 +1,6 @@
 .env
+Report Pack/greenlock.d/live/cloudledgers.org/bundle.pem
+Report Pack/greenlock.d/live/cloudledgers.org/cert.pem
+Report Pack/greenlock.d/live/cloudledgers.org/chain.pem
+Report Pack/greenlock.d/live/cloudledgers.org/fullchain.pem
+Report Pack/greenlock.d/live/cloudledgers.org/privkey.pem

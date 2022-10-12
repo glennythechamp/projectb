@@ -11,13 +11,13 @@ const connection = createConnection({
     database: process.env.MYSQL_DATABASE
 })
 
-//function getMonthDifference(startDate, endDate) {
-//  return (
-//    endDate.getMonth() -
-//    startDate.getMonth() +
-//    12 * (endDate.getFullYear() - startDate.getFullYear())
-//  );
-//}
+function getMonthDifference(startDate, endDate) {
+ return (
+   endDate.getMonth() -
+   startDate.getMonth() +
+   12 * (endDate.getFullYear() - startDate.getFullYear())
+ );
+}
 
 connection.connect((err) => {
     if(err){
@@ -28,73 +28,73 @@ connection.connect((err) => {
 });
 
 // Generate rows for customer table
-// for (var i = 0; i < 30; i++) {
-//     const customer = {id: i, name: faker.name.findName(), address: faker.address.streetAddress(true),  phone_no: `${9}${5}${Math.floor((Math.random() * 999999)+100000)}` };
-//     connection.query('INSERT INTO customers SET ?', customer, (err, res) => {
-//       if(err) throw err;
-//       console.log('Last insert ID:', res.insertId);
-//     });
-// }
+for (var i = 0; i < 30; i++) {
+    const customer = {id: i, name: faker.name.findName(), address: faker.address.streetAddress(true),  phone_no: `${9}${5}${Math.floor((Math.random() * 999999)+100000)}` };
+    connection.query('INSERT INTO customers SET ?', customer, (err, res) => {
+      if(err) throw err;
+      console.log('Last insert ID:', res.insertId);
+    });
+}
 // End Row Generate
 
 // Generate rows for transactions
-// for (var i = 0; i < 50; i++) {
-//     var tdateyear = "2021"
-//     var tdatemonth = Math.floor((Math.random() * 12)+1).toString()
-//     var tdateday = Math.floor((Math.random() * 30)+1).toString()
-//     if (tdatemonth == 2 && tdateday > 28) {
-//       tdateday = "13"
-//     }
-//     var t_date = tdateyear + "-" + tdatemonth + "-" + tdateday
-//     const transactions = {id: i, cust_id: Math.floor((Math.random() * 29) + 0), t_description: "", amount: Math.floor((Math.random() * 1999) + 0), t_date: t_date, approved: true};
-//     connection.query('INSERT INTO transactions SET ?', transactions, (err, res) => {
-//       if(err) throw err;
-//       console.log('Last insert ID:', res.insertId);
-//     });
-// }
+for (var i = 0; i < 50; i++) {
+    var tdateyear = "2021"
+    var tdatemonth = Math.floor((Math.random() * 12)+1).toString()
+    var tdateday = Math.floor((Math.random() * 30)+1).toString()
+    if (tdatemonth == 2 && tdateday > 28) {
+      tdateday = "13"
+    }
+    var t_date = tdateyear + "-" + tdatemonth + "-" + tdateday
+    const transactions = {id: i, cust_id: Math.floor((Math.random() * 29) + 0), t_description: "", amount: Math.floor((Math.random() * 1999) + 0), t_date: t_date, approved: true};
+    connection.query('INSERT INTO transactions SET ?', transactions, (err, res) => {
+      if(err) throw err;
+      console.log('Last insert ID:', res.insertId);
+    });
+}
 // End Row Generate
 
 
 
 // // Generate rows for card_payments
-// for (var i = 10; i < 50; i++) {
-//   const sql = "INSERT INTO card_payments SET ?";
-//   const card_payments = { id: i, trans_id: i, surcharge: Number((Math.random() * (7.99 - 0.5) + 0.5).toFixed(2))}
-//   connection.query(sql, card_payments, function(err, res) {
-//     if (err) throw err;
-//     console.log('Last insert ID:', res.insertId);
-//   });
-// }
+for (var i = 10; i < 50; i++) {
+  const sql = "INSERT INTO card_payments SET ?";
+  const card_payments = { id: i, trans_id: i, surcharge: Number((Math.random() * (7.99 - 0.5) + 0.5).toFixed(2))}
+  connection.query(sql, card_payments, function(err, res) {
+    if (err) throw err;
+    console.log('Last insert ID:', res.insertId);
+  });
+}
 // End Row Generate
 
 // Test set 1: See if UI Updates to include new month
-// var t_date = "2022" + "-" + "02" + "-" + "05"
-//     const transactions1 = {id: 51, cust_id: Math.floor((Math.random() * 29) + 0), t_description: "", amount: Math.floor((Math.random() * 36000) + 24000), t_date: t_date, approved: true};
-//     connection.query('INSERT INTO transactions SET ?', transactions1, (err, res) => {
-//       if(err) throw err;
-//       console.log('Last insert ID:', res.insertId);
-//     });
-// const sql = "INSERT INTO card_payments SET ?";
-// const card_payments1 = { id: 51, trans_id: 51, surcharge: Number((Math.random() * (7.99 - 0.5) + 0.5).toFixed(2))}
-// connection.query(sql, card_payments1, function(err, res) {
-//   if (err) throw err;
-//   console.log('Last insert ID:', res.insertId);
-// });
+var t_date = "2022" + "-" + "02" + "-" + "05"
+    const transactions1 = {id: 51, cust_id: Math.floor((Math.random() * 29) + 0), t_description: "", amount: Math.floor((Math.random() * 36000) + 24000), t_date: t_date, approved: true};
+    connection.query('INSERT INTO transactions SET ?', transactions1, (err, res) => {
+      if(err) throw err;
+      console.log('Last insert ID:', res.insertId);
+    });
+const sql = "INSERT INTO card_payments SET ?";
+const card_payments1 = { id: 51, trans_id: 51, surcharge: Number((Math.random() * (7.99 - 0.5) + 0.5).toFixed(2))}
+connection.query(sql, card_payments1, function(err, res) {
+  if (err) throw err;
+  console.log('Last insert ID:', res.insertId);
+});
 // End Test set 1
 
 // Test set 2: See if UI Updates to include new month
-// var t_date = "2022" + "-" + "02" + "-" + "05"
-//     const transactions2 = {id: 52, cust_id: Math.floor((Math.random() * 29) + 0), t_description: "", amount: Math.floor((Math.random() * 36000) + 24000), t_date: t_date, approved: true};
-//     connection.query('INSERT INTO transactions SET ?', transactions2, (err, res) => {
-//       if(err) throw err;
-//       console.log('Last insert ID:', res.insertId);
-//     });
-// const sql = "INSERT INTO card_payments SET ?";
-// const card_payments2 = { id: 52, trans_id: 52, surcharge: Number((Math.random() * (7.99 - 0.5) + 0.5).toFixed(2))}
-// connection.query(sql, card_payments2, function(err, res) {
-//   if (err) throw err;
-//   console.log('Last insert ID:', res.insertId);
-// });
+var t_date = "2022" + "-" + "02" + "-" + "05"
+    const transactions2 = {id: 52, cust_id: Math.floor((Math.random() * 29) + 0), t_description: "", amount: Math.floor((Math.random() * 36000) + 24000), t_date: t_date, approved: true};
+    connection.query('INSERT INTO transactions SET ?', transactions2, (err, res) => {
+      if(err) throw err;
+      console.log('Last insert ID:', res.insertId);
+    });
+const sql2 = "INSERT INTO card_payments SET ?";
+const card_payments2 = { id: 52, trans_id: 52, surcharge: Number((Math.random() * (7.99 - 0.5) + 0.5).toFixed(2))}
+connection.query(sql2, card_payments2, function(err, res) {
+  if (err) throw err;
+  console.log('Last insert ID:', res.insertId);
+});
 // End Test set 2
 
 
