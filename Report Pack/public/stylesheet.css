@@ -1,0 +1,64 @@
+/* author Tom Miller */
+/* h1 */
+h1 {
+	font-family: arial;
+	color: #4e79a7;
+	font-size: 32pt;
+}
+/* h2 */
+h2 {
+	font-family: arial;
+	color: #4e79a7;
+	font-size: 28pt;
+}
+/* p */
+p {
+	font-family: arial;
+	font-size: 16pt;
+}
+
+/* form */
+form {
+	font-family: arial;
+	font-size: 16pt;
+}
+
+hr {
+	border: 1px solid #f28e2b;
+}
+/*button styling */
+
+button {
+	background-color: #4e79a7;
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	font-size: 16pt;
+}
+
+button:active {
+	background-color: #f28e2b;
+	border: 2px solid  #4e79a7;
+}
+
+button:hover {
+	background-color: #f28e2b;
+}
+/* email input field */
+input {
+	border: 2px solid #f28e2b;
+	border-radius: 4px;
+	padding-bottom: 12px;
+	padding-top:12px;
+	font-size: 16pt;
+	margin-bottom: 8px;
+	margin-top: 8px;
+	width: 40%;
+}
+/* page poistioning */
+body {
+	padding-left: 25px;
+	max-width: 1200px;
+}
+	
